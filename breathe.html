@@ -1,547 +1,477 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Breathing Coach</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                /* Removed min-height: 100vh; to allow content to naturally flow
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Breathing Coach</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* Removed min-height: 100vh; to allow content to naturally flow
                    and keep the header at the top, without affecting the body's scroll */
-                margin: 0;
-                background-color: #f4f4f9;
-            }
+        margin: 0;
+        background-color: #f4f4f9;
+      }
 
-            /* --- Main Title Styling --- */
-            h1 {
-                margin-top: 20px; /* Add some space at the very top */
-            }
+      /* --- Main Title Styling --- */
+      h1 {
+        margin-top: 20px; /* Add some space at the very top */
+      }
 
-            /* --- Settings Section Styling --- */
-            #settings {
-                background-color: #ffffff;
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                margin-bottom: 30px;
-                text-align: center;
-                max-width: 800px; /* Increased max-width to accommodate side-by-side elements */
-                width: 90%;
-                display: flex; /* ADDED: Use flexbox for custom inputs and presets */
-                flex-direction: column; /* Default stack, then modify below */
-            }
+      /* --- Settings Section Styling --- */
+      #settings {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        text-align: center;
+        max-width: 800px; /* Increased max-width to accommodate side-by-side elements */
+        width: 90%;
+        display: flex; /* ADDED: Use flexbox for custom inputs and presets */
+        flex-direction: column; /* Default stack, then modify below */
+      }
 
-            /* NEW: Container for inputs and presets to be side-by-side */
-            #custom-and-presets-container {
-                display: flex;
-                flex-direction: row; /* Layout side-by-side */
-                justify-content: space-between;
-                gap: 20px;
-                padding-bottom: 10px;
-                margin-bottom: 20px;
-                border-bottom: 1px solid #eee;
-            }
+      /* NEW: Container for inputs and presets to be side-by-side */
+      #custom-and-presets-container {
+        display: flex;
+        flex-direction: row; /* Layout side-by-side */
+        justify-content: space-between;
+        gap: 20px;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #eee;
+      }
 
-            /* NEW: Styling for custom inputs and presets sections within the container */
-            #custom-settings-inputs,
-            #presets {
-                flex: 1; /* Make both take equal width */
-                min-width: 250px; /* Ensure a minimum size */
-                border: none; /* Remove previous border */
-                padding: 0;
-                margin: 0;
-            }
+      /* NEW: Styling for custom inputs and presets sections within the container */
+      #custom-settings-inputs,
+      #presets {
+        flex: 1; /* Make both take equal width */
+        min-width: 250px; /* Ensure a minimum size */
+        border: none; /* Remove previous border */
+        padding: 0;
+        margin: 0;
+      }
 
-            #presets {
-                text-align: left;
-                padding-top: 0; /* Remove padding from previous configuration */
-                border-top: none;
-            }
+      #presets {
+        text-align: left;
+        padding-top: 0; /* Remove padding from previous configuration */
+        border-top: none;
+      }
 
-            /* --- Custom Inputs Styling --- */
-            .setting-group {
-                margin: 10px 0;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
+      /* --- Custom Inputs Styling --- */
+      .setting-group {
+        margin: 10px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-            .setting-group label {
-                flex: 2;
-                text-align: left;
-                margin-right: 10px;
-                font-weight: bold;
-            }
+      .setting-group label {
+        flex: 2;
+        text-align: left;
+        margin-right: 10px;
+        font-weight: bold;
+      }
 
-            .setting-group input[type="number"] {
-                flex: 1;
-                padding: 5px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                width: 60px;
-                text-align: center;
-            }
+      .setting-group input[type="number"] {
+        flex: 1;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 60px;
+        text-align: center;
+      }
 
-            /* --- Preset Section Styling --- */
-            .preset-group {
-                display: flex;
-                align-items: center;
-                margin: 5px 0;
-                cursor: pointer;
-                padding: 5px;
-                border-radius: 4px;
-                transition: background-color 0.2s;
-            }
+      /* --- Preset Section Styling --- */
+      .preset-group {
+        display: flex;
+        align-items: center;
+        margin: 5px 0;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+      }
 
-            .preset-group:hover {
-                background-color: #e9ecef;
-            }
+      .preset-group:hover {
+        background-color: #e9ecef;
+      }
 
-            .preset-group input[type="radio"] {
-                margin-right: 10px;
-            }
+      .preset-group input[type="radio"] {
+        margin-right: 10px;
+      }
 
-            .preset-info {
-                font-size: 0.9em;
-                color: #6c757d;
-                margin-left: 10px;
-            }
+      .preset-info {
+        font-size: 0.9em;
+        color: #6c757d;
+        margin-left: 10px;
+      }
 
-            /* UPDATED BUTTON STYLES */
-            #start-btn {
-                padding: 15px 30px;
-                background-color: #007bff;
-                color: white;
-                border: none;
-                border-radius: 8px;
-                cursor: pointer;
-                font-size: 18px;
-                font-weight: bold;
-                margin-top: 20px;
-                transition: background-color 0.3s;
-                width: 100%;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            }
+      /* UPDATED BUTTON STYLES */
+      #start-btn {
+        padding: 15px 30px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 20px;
+        transition: background-color 0.3s;
+        width: 100%;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
 
-            #start-btn:hover:not(:disabled) {
-                background-color: #0056b3;
-            }
-            /* END UPDATED BUTTON STYLES */
+      #start-btn:hover:not(:disabled) {
+        background-color: #0056b3;
+      }
+      /* END UPDATED BUTTON STYLES */
 
-            #start-btn:disabled {
-                background-color: #6c757d;
-                cursor: not-allowed;
-            }
+      #start-btn:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+      }
 
-            /* --- Breathing Display Styling --- */
-            #breathing-container {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                /* ADDED: min-height on the container to center it better on the screen */
-                min-height: 50vh;
-                justify-content: center;
-                cursor: pointer;
-            }
+      /* --- Breathing Display Styling --- */
+      #breathing-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* ADDED: min-height on the container to center it better on the screen */
+        min-height: 50vh;
+        justify-content: center;
+        cursor: pointer;
+      }
 
-            #instructions {
-                font-size: 2.5em;
-                font-weight: bold;
-                color: #333;
-                margin-bottom: 20px;
-                min-height: 1.2em;
-                visibility: hidden;
-            }
+      #instructions {
+        font-size: 2.5em;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 20px;
+        min-height: 1.2em;
+        visibility: hidden;
+      }
 
-            #circle {
-                background-color: #007bff;
-                border-radius: 50%;
-                /* REMOVED: Initial width/height as it's set in JS variables now */
-                box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
-                transition:
-                    width ease-in-out,
-                    height ease-in-out;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: white;
-                font-size: 1.5em;
-                font-weight: bold;
-            }
+      #circle {
+        background-color: #007bff;
+        border-radius: 50%;
+        /* REMOVED: Initial width/height as it's set in JS variables now */
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        transition:
+          width ease-in-out,
+          height ease-in-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5em;
+        font-weight: bold;
+      }
 
-            .hidden {
-                display: none !important;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>🧘 Breathing Coach 🧘</h1>
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🧘 Breathing Coach 🧘</h1>
 
-        <div id="settings">
-            <div id="custom-and-presets-container">
-                <div id="custom-settings-inputs">
-                    <h3>Timing</h3>
-                    <div class="setting-group">
-                        <label for="inhale-time">Breath In:</label>
-                        <input
-                            type="number"
-                            id="inhale-time"
-                            value="4"
-                            min="1"
-                        />
-                    </div>
-                    <div class="setting-group">
-                        <label for="hold-in-time">Hold (In):</label>
-                        <input
-                            type="number"
-                            id="hold-in-time"
-                            value="4"
-                            min="0"
-                        />
-                    </div>
-                    <div class="setting-group">
-                        <label for="exhale-time">Breath Out:</label>
-                        <input
-                            type="number"
-                            id="exhale-time"
-                            value="4"
-                            min="1"
-                        />
-                    </div>
-                    <div class="setting-group">
-                        <label for="hold-out-time">Hold (Out):</label>
-                        <input
-                            type="number"
-                            id="hold-out-time"
-                            value="4"
-                            min="0"
-                        />
-                    </div>
-                </div>
-
-                <div id="presets">
-                    <h3>Options</h3>
-
-                    <div class="preset-group">
-                        <input
-                            type="radio"
-                            name="preset"
-                            id="box-breathing"
-                            value="4,4,4,4"
-                            checked
-                        />
-                        <label for="box-breathing">
-                            Box Breathing (4-4-4-4)
-                            <span class="preset-info"
-                                >Inhale, Hold, Exhale, Hold (4s each)</span
-                            >
-                        </label>
-                    </div>
-
-                    <div class="preset-group">
-                        <input
-                            type="radio"
-                            name="preset"
-                            id="4-7-8"
-                            value="4,7,8,0"
-                        />
-                        <label for="4-7-8">
-                            4-7-8 Breathing
-                            <span class="preset-info"
-                                >Inhale (4s), Hold (7s), Exhale (8s)</span
-                            >
-                        </label>
-                    </div>
-
-                    <div class="preset-group">
-                        <input
-                            type="radio"
-                            name="preset"
-                            id="diaphragmatic"
-                            value="5,2,5,0"
-                        />
-                        <label for="diaphragmatic">
-                            Diaphragmatic Breathing (5-2-5-0)
-                            <span class="preset-info"
-                                >Focus on deep belly breathing</span
-                            >
-                        </label>
-                    </div>
-
-                    <div class="preset-group">
-                        <input
-                            type="radio"
-                            name="preset"
-                            id="5-5-5"
-                            value="5,5,5,5"
-                        />
-                        <label for="5-5-5">
-                            5-5-5 Breathing
-                            <span class="preset-info"
-                                >Inhale, Hold, Exhale, Hold (5s each)</span
-                            >
-                        </label>
-                    </div>
-
-                    <div class="preset-group">
-                        <input
-                            type="radio"
-                            name="preset"
-                            id="custom"
-                            value=""
-                        />
-                        <label for="custom">
-                            Custom
-                            <span class="preset-info">Use custom times</span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <button id="start-btn">Start Breathing Exercise</button>
+    <div id="settings">
+      <div id="custom-and-presets-container">
+        <div id="custom-settings-inputs">
+          <h3>Timing</h3>
+          <div class="setting-group">
+            <label for="inhale-time">Breath In:</label>
+            <input type="number" id="inhale-time" value="4" min="1" />
+          </div>
+          <div class="setting-group">
+            <label for="hold-in-time">Hold (In):</label>
+            <input type="number" id="hold-in-time" value="4" min="0" />
+          </div>
+          <div class="setting-group">
+            <label for="exhale-time">Breath Out:</label>
+            <input type="number" id="exhale-time" value="4" min="1" />
+          </div>
+          <div class="setting-group">
+            <label for="hold-out-time">Hold (Out):</label>
+            <input type="number" id="hold-out-time" value="4" min="0" />
+          </div>
         </div>
 
-        <div id="breathing-container" class="hidden">
-            <div id="instructions"></div>
-            <div id="circle"></div>
+        <div id="presets">
+          <h3>Options</h3>
+
+          <div class="preset-group">
+            <input
+              type="radio"
+              name="preset"
+              id="box-breathing"
+              value="4,4,4,4"
+              checked
+            />
+            <label for="box-breathing">
+              Box Breathing (4-4-4-4)
+              <span class="preset-info"
+                >Inhale, Hold, Exhale, Hold (4s each)</span
+              >
+            </label>
+          </div>
+
+          <div class="preset-group">
+            <input type="radio" name="preset" id="4-7-8" value="4,7,8,0" />
+            <label for="4-7-8">
+              4-7-8 Breathing
+              <span class="preset-info"
+                >Inhale (4s), Hold (7s), Exhale (8s)</span
+              >
+            </label>
+          </div>
+
+          <div class="preset-group">
+            <input
+              type="radio"
+              name="preset"
+              id="diaphragmatic"
+              value="5,2,5,0"
+            />
+            <label for="diaphragmatic">
+              Diaphragmatic Breathing (5-2-5-0)
+              <span class="preset-info">Focus on deep belly breathing</span>
+            </label>
+          </div>
+
+          <div class="preset-group">
+            <input type="radio" name="preset" id="5-5-5" value="5,5,5,5" />
+            <label for="5-5-5">
+              5-5-5 Breathing
+              <span class="preset-info"
+                >Inhale, Hold, Exhale, Hold (5s each)</span
+              >
+            </label>
+          </div>
+
+          <div class="preset-group">
+            <input type="radio" name="preset" id="custom" value="" />
+            <label for="custom">
+              Custom
+              <span class="preset-info">Use custom times</span>
+            </label>
+          </div>
         </div>
+      </div>
+      <button id="start-btn">Start Breathing Exercise</button>
+    </div>
 
-        <script>
-            const instructionsDisplay = document.getElementById("instructions");
-            const circle = document.getElementById("circle");
-            const startBtn = document.getElementById("start-btn");
-            const settingsDiv = document.getElementById("settings");
-            const breathingContainer = document.getElementById(
-                "breathing-container",
-            );
-            const presetRadios = document.querySelectorAll(
-                'input[name="preset"]',
-            );
+    <div id="breathing-container" class="hidden">
+      <div id="instructions"></div>
+      <div id="circle"></div>
+    </div>
 
-            let intervalId = null;
+    <script>
+      const instructionsDisplay = document.getElementById("instructions");
+      const circle = document.getElementById("circle");
+      const startBtn = document.getElementById("start-btn");
+      const settingsDiv = document.getElementById("settings");
+      const breathingContainer = document.getElementById("breathing-container");
+      const presetRadios = document.querySelectorAll('input[name="preset"]');
 
-            // UPDATED: Increased sizes for a bigger circle
-            const MIN_SIZE = 150; // Was 100
-            const MAX_SIZE = 400; // Was 300
+      let intervalId = null;
 
-            const inputElements = {
-                inhale: document.getElementById("inhale-time"),
-                holdIn: document.getElementById("hold-in-time"),
-                exhale: document.getElementById("exhale-time"),
-                holdOut: document.getElementById("hold-out-time"),
-            };
+      // UPDATED: Increased sizes for a bigger circle
+      const MIN_SIZE = 150; // Was 100
+      const MAX_SIZE = 400; // Was 300
 
-            // --- Core Preset Logic ---
+      const inputElements = {
+        inhale: document.getElementById("inhale-time"),
+        holdIn: document.getElementById("hold-in-time"),
+        exhale: document.getElementById("exhale-time"),
+        holdOut: document.getElementById("hold-out-time"),
+      };
 
-            function applyPreset(presetValue) {
-                // presetValue is a comma-separated string: "inhale,holdIn,exhale,holdOut"
-                if (!presetValue) {
-                    // It's the 'Custom' option, do nothing to the inputs
-                    return;
-                }
+      // --- Core Preset Logic ---
 
-                const [inhale, holdIn, exhale, holdOut] = presetValue
-                    .split(",")
-                    .map(Number);
+      function applyPreset(presetValue) {
+        // presetValue is a comma-separated string: "inhale,holdIn,exhale,holdOut"
+        if (!presetValue) {
+          // It's the 'Custom' option, do nothing to the inputs
+          return;
+        }
 
-                inputElements.inhale.value = inhale;
-                inputElements.holdIn.value = holdIn;
-                inputElements.exhale.value = exhale;
-                inputElements.holdOut.value = holdOut;
-            }
+        const [inhale, holdIn, exhale, holdOut] = presetValue
+          .split(",")
+          .map(Number);
 
-            // Add event listeners to radio buttons
-            presetRadios.forEach((radio) => {
-                radio.addEventListener("change", (event) => {
-                    applyPreset(event.target.value);
-                });
-            });
+        inputElements.inhale.value = inhale;
+        inputElements.holdIn.value = holdIn;
+        inputElements.exhale.value = exhale;
+        inputElements.holdOut.value = holdOut;
+      }
 
-            // Initialize with the checked preset (Box Breathing)
-            document.addEventListener("DOMContentLoaded", () => {
-                const initialPreset = document.querySelector(
-                    'input[name="preset"]:checked',
-                );
-                if (initialPreset) {
-                    applyPreset(initialPreset.value);
-                }
-            });
+      // Add event listeners to radio buttons
+      presetRadios.forEach((radio) => {
+        radio.addEventListener("change", (event) => {
+          applyPreset(event.target.value);
+        });
+      });
 
-            // --- Core Breathing Logic ---
+      // Initialize with the checked preset (Box Breathing)
+      document.addEventListener("DOMContentLoaded", () => {
+        const initialPreset = document.querySelector(
+          'input[name="preset"]:checked',
+        );
+        if (initialPreset) {
+          applyPreset(initialPreset.value);
+        }
+      });
 
-            function startBreathingCycle() {
-                // Get the current values from the inputs (which may have been set by a preset)
-                const inhaleDuration =
-                    parseInt(inputElements.inhale.value) * 1000;
-                const holdInDuration =
-                    parseInt(inputElements.holdIn.value) * 1000;
-                const exhaleDuration =
-                    parseInt(inputElements.exhale.value) * 1000;
-                const holdOutDuration =
-                    parseInt(inputElements.holdOut.value) * 1000;
+      // --- Core Breathing Logic ---
 
-                // Simple validation check before starting
-                if (inhaleDuration <= 0 || exhaleDuration <= 0) {
-                    alert("Inhale and Exhale times must be greater than 0.");
-                    return;
-                }
+      function startBreathingCycle() {
+        // Get the current values from the inputs (which may have been set by a preset)
+        const inhaleDuration = parseInt(inputElements.inhale.value) * 1000;
+        const holdInDuration = parseInt(inputElements.holdIn.value) * 1000;
+        const exhaleDuration = parseInt(inputElements.exhale.value) * 1000;
+        const holdOutDuration = parseInt(inputElements.holdOut.value) * 1000;
 
-                // Disable start button and hide settings
-                startBtn.disabled = true;
-                settingsDiv.classList.add("hidden");
-                breathingContainer.classList.remove("hidden");
+        // Simple validation check before starting
+        if (inhaleDuration <= 0 || exhaleDuration <= 0) {
+          alert("Inhale and Exhale times must be greater than 0.");
+          return;
+        }
 
-                // Function to perform one step of the breathing cycle
-                const performStep = (circleText, size, duration, nextStep) => {
-                    circle.textContent = circleText; // Only text inside the circle
+        // Disable start button and hide settings
+        startBtn.disabled = true;
+        settingsDiv.classList.add("hidden");
+        breathingContainer.classList.remove("hidden");
 
-                    // Set the CSS transition duration dynamically
-                    circle.style.transitionDuration = `${duration / 1000}s`;
+        // Function to perform one step of the breathing cycle
+        const performStep = (circleText, size, duration, nextStep) => {
+          circle.textContent = circleText; // Only text inside the circle
 
-                    // Set the target size
-                    circle.style.width = `${size}px`;
-                    circle.style.height = `${size}px`;
+          // Set the CSS transition duration dynamically
+          circle.style.transitionDuration = `${duration / 1000}s`;
 
-                    // Set up the timer for the end of the step
-                    setTimeout(nextStep, duration);
-                };
+          // Set the target size
+          circle.style.width = `${size}px`;
+          circle.style.height = `${size}px`;
 
-                // Define the sequence of steps
-                const cycle = () => {
-                    // 1. INHALE
-                    // instructionsDisplay.textContent = "Inhale"; // Added visual instruction
-                    performStep("Inhale", MAX_SIZE, inhaleDuration, () => {
-                        // 2. HOLD IN
-                        if (holdInDuration > 0) {
-                            // instructionsDisplay.textContent = "Hold"; // Added visual instruction
-                            performStep(
-                                "Hold",
-                                MAX_SIZE,
-                                holdInDuration,
-                                () => {
-                                    // 3. EXHALE
-                                    // instructionsDisplay.textContent = "Exhale"; // Added visual instruction
-                                    performStep(
-                                        "Exhale",
-                                        MIN_SIZE,
-                                        exhaleDuration,
-                                        () => {
-                                            // 4. HOLD OUT
-                                            if (holdOutDuration > 0) {
-                                                // instructionsDisplay.textContent = "Hold"; // Added visual instruction
-                                                performStep(
-                                                    "Hold",
-                                                    MIN_SIZE,
-                                                    holdOutDuration,
-                                                    () => {
-                                                        // Cycle ends, repeat
-                                                        cycle();
-                                                    },
-                                                );
-                                            } else {
-                                                // Cycle ends, repeat (skip hold out)
-                                                cycle();
-                                            }
-                                        },
-                                    );
-                                },
-                            );
-                        } else {
-                            // 3. EXHALE (skip hold in)
-                            // instructionsDisplay.textContent = "Exhale"; // Added visual instruction
-                            performStep(
-                                "Exhale",
-                                MIN_SIZE,
-                                exhaleDuration,
-                                () => {
-                                    // 4. HOLD OUT
-                                    if (holdOutDuration > 0) {
-                                        // instructionsDisplay.textContent = "Hold"; // Added visual instruction
-                                        performStep(
-                                            "Hold",
-                                            MIN_SIZE,
-                                            holdOutDuration,
-                                            () => {
-                                                // Cycle ends, repeat
-                                                cycle();
-                                            },
-                                        );
-                                    } else {
-                                        // Cycle ends, repeat (skip both holds)
-                                        cycle();
-                                    }
-                                },
-                            );
-                        }
+          // Set up the timer for the end of the step
+          setTimeout(nextStep, duration);
+        };
+
+        // Define the sequence of steps
+        const cycle = () => {
+          // 1. INHALE
+          // instructionsDisplay.textContent = "Inhale"; // Added visual instruction
+          performStep("Inhale", MAX_SIZE, inhaleDuration, () => {
+            // 2. HOLD IN
+            if (holdInDuration > 0) {
+              // instructionsDisplay.textContent = "Hold"; // Added visual instruction
+              performStep("Hold", MAX_SIZE, holdInDuration, () => {
+                // 3. EXHALE
+                // instructionsDisplay.textContent = "Exhale"; // Added visual instruction
+                performStep("Exhale", MIN_SIZE, exhaleDuration, () => {
+                  // 4. HOLD OUT
+                  if (holdOutDuration > 0) {
+                    // instructionsDisplay.textContent = "Hold"; // Added visual instruction
+                    performStep("Hold", MIN_SIZE, holdOutDuration, () => {
+                      // Cycle ends, repeat
+                      cycle();
                     });
-                };
-
-                // Start the cycle after a brief "Get Ready" period
-                instructionsDisplay.textContent = "Get Ready...";
-                instructionsDisplay.style.visibility = "visible";
-                circle.style.width = `${MIN_SIZE}px`;
-                circle.style.height = `${MIN_SIZE}px`;
-                circle.textContent = "";
-
-                setTimeout(() => {
-                    instructionsDisplay.style.visibility = "hidden";
+                  } else {
+                    // Cycle ends, repeat (skip hold out)
                     cycle();
-                }, 2000);
-            }
-
-            // --- Initialization and Event Listeners ---
-
-            function stopBreathingCycle() {
-                // IMPORTANT: Clearing intervalId is not necessary here as the cycle is driven by setTimeout chains,
-                // but we keep the logic structure in case it's converted to use setInterval later.
-                if (intervalId) {
-                    // This block is for cleanup if setInterval was used.
-                    // For the current setTimeout chain, this is mostly a placeholder.
-                    clearInterval(intervalId);
-                    intervalId = null;
-                }
-
-                // A cleaner way to stop the current cycle is to reload the page or use a flag,
-                // but for this example, simply returning to the settings page is sufficient
-                // as new setTimeout calls won't be made.
-
-                startBtn.disabled = false;
-                settingsDiv.classList.remove("hidden");
-                breathingContainer.classList.add("hidden");
-                instructionsDisplay.style.visibility = "hidden";
-                circle.textContent = "Click 'Start'";
-                circle.style.width = `${MIN_SIZE}px`; // Reset size on stop
-                circle.style.height = `${MIN_SIZE}px`;
-            }
-
-            startBtn.addEventListener("click", startBreathingCycle);
-
-            // Listen for changes in the custom inputs to enable the start button
-            Object.values(inputElements).forEach((input) => {
-                input.addEventListener("input", () => {
-                    // When a user manually changes an input, select the 'Custom' radio button
-                    document.getElementById("custom").checked = true;
-
-                    // Ensure all inputs have a valid number (min 0 for holds, min 1 for in/out)
-                    const isValid = Object.values(inputElements).every((i) => {
-                        const val = parseInt(i.value);
-                        const min = parseInt(i.min);
-                        return !isNaN(val) && val >= min;
-                    });
-                    startBtn.disabled = !isValid;
+                  }
                 });
-            });
+              });
+            } else {
+              // 3. EXHALE (skip hold in)
+              // instructionsDisplay.textContent = "Exhale"; // Added visual instruction
+              performStep("Exhale", MIN_SIZE, exhaleDuration, () => {
+                // 4. HOLD OUT
+                if (holdOutDuration > 0) {
+                  // instructionsDisplay.textContent = "Hold"; // Added visual instruction
+                  performStep("Hold", MIN_SIZE, holdOutDuration, () => {
+                    // Cycle ends, repeat
+                    cycle();
+                  });
+                } else {
+                  // Cycle ends, repeat (skip both holds)
+                  cycle();
+                }
+              });
+            }
+          });
+        };
 
-            // Initial setup for the circle
-            circle.style.width = `${MIN_SIZE}px`;
-            circle.style.height = `${MIN_SIZE}px`;
-            circle.textContent = "Click 'Start'";
+        // Start the cycle after a brief "Get Ready" period
+        instructionsDisplay.textContent = "Get Ready...";
+        instructionsDisplay.style.visibility = "visible";
+        circle.style.width = `${MIN_SIZE}px`;
+        circle.style.height = `${MIN_SIZE}px`;
+        circle.textContent = "";
 
-            // Allow user to click the breathing area to stop and return to settings
-            breathingContainer.addEventListener("click", stopBreathingCycle);
-        </script>
-    </body>
+        setTimeout(() => {
+          instructionsDisplay.style.visibility = "hidden";
+          cycle();
+        }, 2000);
+      }
+
+      // --- Initialization and Event Listeners ---
+
+      function stopBreathingCycle() {
+        // IMPORTANT: Clearing intervalId is not necessary here as the cycle is driven by setTimeout chains,
+        // but we keep the logic structure in case it's converted to use setInterval later.
+        if (intervalId) {
+          // This block is for cleanup if setInterval was used.
+          // For the current setTimeout chain, this is mostly a placeholder.
+          clearInterval(intervalId);
+          intervalId = null;
+        }
+
+        // A cleaner way to stop the current cycle is to reload the page or use a flag,
+        // but for this example, simply returning to the settings page is sufficient
+        // as new setTimeout calls won't be made.
+
+        startBtn.disabled = false;
+        settingsDiv.classList.remove("hidden");
+        breathingContainer.classList.add("hidden");
+        instructionsDisplay.style.visibility = "hidden";
+        circle.textContent = "Click 'Start'";
+        circle.style.width = `${MIN_SIZE}px`; // Reset size on stop
+        circle.style.height = `${MIN_SIZE}px`;
+      }
+
+      startBtn.addEventListener("click", startBreathingCycle);
+
+      // Listen for changes in the custom inputs to enable the start button
+      Object.values(inputElements).forEach((input) => {
+        input.addEventListener("input", () => {
+          // When a user manually changes an input, select the 'Custom' radio button
+          document.getElementById("custom").checked = true;
+
+          // Ensure all inputs have a valid number (min 0 for holds, min 1 for in/out)
+          const isValid = Object.values(inputElements).every((i) => {
+            const val = parseInt(i.value);
+            const min = parseInt(i.min);
+            return !isNaN(val) && val >= min;
+          });
+          startBtn.disabled = !isValid;
+        });
+      });
+
+      // Initial setup for the circle
+      circle.style.width = `${MIN_SIZE}px`;
+      circle.style.height = `${MIN_SIZE}px`;
+      circle.textContent = "Click 'Start'";
+
+      // Allow user to click the breathing area to stop and return to settings
+      breathingContainer.addEventListener("click", stopBreathingCycle);
+    </script>
+  </body>
 </html>
